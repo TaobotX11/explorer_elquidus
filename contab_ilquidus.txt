@@ -1,0 +1,2 @@
+*/1 * * * * cd /root/Projects/explorer && /root/.nvm/versions/node/v20.19.6/bin/node scripts/sync.js update > /dev/null 2>&1
+*/5 * * * * cd /root/Projects/explorer && /root/.nvm/versions/node/v20.19.6/bin/node scripts/sync.js peers > /dev/null 2>&1
