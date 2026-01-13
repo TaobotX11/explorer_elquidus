@@ -1,20 +1,20 @@
 # eIquidus
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/team-exor/eiquidus?color=ffbd11&label=version)
-![GitHub Release Date](https://img.shields.io/github/release-date/team-exor/eiquidus)
-![GitHub last commit](https://img.shields.io/github/last-commit/team-exor/eiquidus)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/team-nusa/eiquidus?color=ffbd11&label=version)
+![GitHub Release Date](https://img.shields.io/github/release-date/team-nusa/eiquidus)
+![GitHub last commit](https://img.shields.io/github/last-commit/team-nusa/eiquidus)
 <img src="public/img/screenshots/platform-windows macos linux-lightgrey.svg" />
-![GitHub](https://img.shields.io/github/license/team-exor/eiquidus?color=ffbd11)
+![GitHub](https://img.shields.io/github/license/team-nusa/eiquidus?color=ffbd11)
 
-Written in node.js and mongodb, eIquidus is the most stable, secure, customizable and feature-rich open-source block explorer with support for virtually any altcoin that implements some form of the [Bitcoin RPC API protocol](https://developer.bitcoin.org/reference/rpc/index.html) (EVM blockchains such as ETH, BNB, etc. are not supported). Originally built for the [Exor blockchain](https://github.com/team-exor/exor), eIquidus has since grown into a fully-featured explorer with a focus on stability and security at its core. All features from the [original iquidus explorer](https://github.com/iquidus/explorer) are included here along with many new ideas from other iquidus forks, and an absolute ton of new custom changes and bug fixes that were developed specifically for eIquidus.
+Written in node.js and mongodb, eIquidus is the most stable, secure, customizable and feature-rich open-source block explorer with support for virtually any altcoin that implements some form of the [Bitcoin RPC API protocol](https://developer.bitcoin.org/reference/rpc/index.html) (EVM blockchains such as ETH, BNB, etc. are not supported). Originally built for the [nusa blockchain](https://github.com/team-nusa/nusa), eIquidus has since grown into a fully-featured explorer with a focus on stability and security at its core. All features from the [original iquidus explorer](https://github.com/iquidus/explorer) are included here along with many new ideas from other iquidus forks, and an absolute ton of new custom changes and bug fixes that were developed specifically for eIquidus.
 
 ![Homepage](public/img/screenshots/homepage-1-103-0.png)
 
 ### Crowdfunding Program
 
-Exor accepts targeted donations in an effort to crowdfund various feature and improvement requests for the block explorer and other Exor-related projects. [Browse the list of unfunded tasks](https://exor.io/tasklist/hide-completed/hide-funded/show-unfunded/) and send Exor coins to the correct funding address to help meet the funding goal for tasks that you would like to see developed. Once the funding goal is met, Exor developers will begin work on the task asap and will remain a top priority until completed. If you are a software developer and would like to work on funded tasks in exchange for payment in EXOR, please get in touch with us using one of the [Developer Contact](#developer-contact) links below.
+nusa accepts targeted donations in an effort to crowdfund various feature and improvement requests for the block explorer and other nusa-related projects. [Browse the list of unfunded tasks](https://nusa.io/tasklist/hide-completed/hide-funded/show-unfunded/) and send nusa coins to the correct funding address to help meet the funding goal for tasks that you would like to see developed. Once the funding goal is met, nusa developers will begin work on the task asap and will remain a top priority until completed. If you are a software developer and would like to work on funded tasks in exchange for payment in nusa, please get in touch with us using one of the [Developer Contact](#developer-contact) links below.
 
-**NEW:** Preliminary plugin support has been added. Help support the first plugin proposal for automatic snapshot creation. More info: [https://exor.io/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/](https://exor.io/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/)
+**NEW:** Preliminary plugin support has been added. Help support the first plugin proposal for automatic snapshot creation. More info: [https://nusa.io/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/](https://nusa.io/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/)
 
 ### Premium Support
 
@@ -25,7 +25,7 @@ All code in this project is open source and available free-of-charge under the B
 Feel free to contact the developer using one of the options below:
 
 <div align="center">
-<a href="https://discord.gg/dSuGm3y"><img src="https://img.shields.io/badge/Discord-Joe%20%5BTeam%20Exor%5D-blue?style=for-the-badge&logo=Discord" /></a>&nbsp;
+<a href="https://discord.gg/dSuGm3y"><img src="https://img.shields.io/badge/Discord-Joe%20%5BTeam%20nusa%5D-blue?style=for-the-badge&logo=Discord" /></a>&nbsp;
 <a href="https://t.me/joeuhren"><img src="https://img.shields.io/badge/Telegram-joeuhren-blue?style=for-the-badge&logo=Telegram" /></a>
 </div>
 
@@ -148,7 +148,7 @@ Table of Contents
   - **Transaction Info:** Displays transaction summary, optional OP_RETURN value, optional list of wallet addresses that extracted/mined the coinbase transaction, list of input addresses and output addresses for a specific transaction
   - **Address Info:** Displays wallet address summary (balance, total sent, total received, QR code) and a list of latest transactions for a specific wallet address
 - Choose from 26 built-in themes with tweakable settings such as light and dark options to customize the look and feel of the explorer:
-  - **Exor** *\*default theme made especially for eIquidus*
+  - **nusa** *\*default theme made especially for eIquidus*
   - **Cerulean** ([Preview](https://bootswatch.com/cerulean/))
   - **Cosmo** ([Preview](https://bootswatch.com/cosmo/))
   - **Cyborg** ([Preview](https://bootswatch.com/cyborg/))
@@ -237,7 +237,7 @@ Table of Contents
 
 ### See it in Action
 
--  https://explorer.exor.io/
+-  https://explorer.nusa.io/
 
 ### Installation
 
@@ -326,7 +326,7 @@ exit
 #### Download Source Code
 
 ```
-git clone https://github.com/team-exor/eiquidus explorer
+git clone https://github.com/team-nusa/eiquidus explorer
 ```
 
 #### Install Node Modules
@@ -973,20 +973,20 @@ This warning is currently displayed when starting or stopping the explorer using
 
 ### Donations / Support Us
 
-The eIquidus block explorer is brought to you by the tireless efforts of the [Exor development team](https://exor.io/#section-team) for the benefit of the greater crypto community. If you enjoy our work, please consider supporting our continued development of this and many other cool crypto projects which you can find on our [github page](https://github.com/team-exor).
+The eIquidus block explorer is brought to you by the tireless efforts of the [nusa development team](https://nusa.io/#section-team) for the benefit of the greater crypto community. If you enjoy our work, please consider supporting our continued development of this and many other cool crypto projects which you can find on our [github page](https://github.com/team-nusa).
 
 You can support us via one of the following options:
 
-1. Buy and hodl EXOR. Buying and trading our EXOR coin helps stimulate the market price which allows us to hire more developers and continue to release high quality products in the future. We are listed on the following exchanges:
-    - [FreiXLite](https://freixlite.com/market/EXOR/LTC)
-    - [Dexomy](https://dexomy.com/exchange/dashboard?coin_pair=EXOR_USDT)
-2. Participate in our [crowdfunding program](https://exor.io/tasklist/hide-completed/hide-funded/show-unfunded/) by either sending some cryptocurrency to help fund the tasks you are most eager to see brought to life or [submit a new custom task request](https://exor.io/add-new-task/) detailing a feature or improvement you would like to see developed for any Exor-related project.
+1. Buy and hodl nusa. Buying and trading our nusa coin helps stimulate the market price which allows us to hire more developers and continue to release high quality products in the future. We are listed on the following exchanges:
+    - [FreiXLite](https://freixlite.com/market/nusa/LTC)
+    - [Dexomy](https://dexomy.com/exchange/dashboard?coin_pair=nusa_USDT)
+2. Participate in our [crowdfunding program](https://nusa.io/tasklist/hide-completed/hide-funded/show-unfunded/) by either sending some cryptocurrency to help fund the tasks you are most eager to see brought to life or [submit a new custom task request](https://nusa.io/add-new-task/) detailing a feature or improvement you would like to see developed for any nusa-related project.
 3. Consider a small donation by sending us some cryptocurrency:
     - **BTC:** [15zQAQFB9KR35nPWEJEKvmytUF6fg2zvdP](https://www.blockchain.com/btc/address/15zQAQFB9KR35nPWEJEKvmytUF6fg2zvdP)
     - **ETH:** [0x1E4163EE9721bCA934D9e40C792360A901a59E02](https://etherscan.io/address/0x1E4163EE9721bCA934D9e40C792360A901a59E02) **NOTE:** Can be used for USDT or any other token on the ETH network
     - **BNB:** [0x1E4163EE9721bCA934D9e40C792360A901a59E02](https://bscscan.com/address/0x1E4163EE9721bCA934D9e40C792360A901a59E02) **NOTE:** Can be used for USDT or any other token on the BNB network
-    - **EXOR:** [EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd](https://explorer.exor.io/address/EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd)
-4. Are you a software developer? Consider taking advantage of our [crowdfunding program](https://exor.io/tasklist/hide-completed/) and get paid in EXOR to help make the block explorer and other Exor-related projects even better by submitting code improvements for open bounty tasks.
+    - **nusa:** [EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd](https://explorer.nusa.io/address/EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd)
+4. Are you a software developer? Consider taking advantage of our [crowdfunding program](https://nusa.io/tasklist/hide-completed/) and get paid in nusa to help make the block explorer and other nusa-related projects even better by submitting code improvements for open bounty tasks.
 
 ### Special Thanks
 
@@ -999,7 +999,7 @@ You can support us via one of the following options:
 
 ### License
 
-Copyright (c) 2019-2025, The Exor Community<br />
+Copyright (c) 2019-2025, The nusa Community<br />
 Copyright (c) 2017, The Chaincoin Community<br />
 Copyright (c) 2015, Iquidus Technology<br />
 Copyright (c) 2015, Luke Williams<br />
