@@ -120,6 +120,19 @@ block content
       .alert.alert-info(role='alert', style='text-align:center;')
         strong #{settings.localization.block_genesis}
     else
+      if image64 !== 'data:image/png;base64,'
+        .card.card-default.border-0
+          .card-header
+            strong Image Data
+          table.table.table-bordered.table-striped.table-hover.summary-table.mobile-border-right
+            thead
+              tr(class=theadClasses)
+                th.text-center Image_Data_#{block.height}
+            tbody
+              - var base64Img = image64;
+              tr 
+                td.text-center
+                  img.figure(src=base64Img, title='NUXBlockchain_Image_'+block.height, alt='NUXBlock_Img_'+block.height)
       .card.card-default.border-0
         .card-header
           strong #{settings.localization.ex_latest_transactions}
