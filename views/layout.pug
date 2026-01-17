@@ -346,6 +346,9 @@ html(lang='en')
           if ('#{settings.shared_pages.difficulty}' == 'Hybrid') difficultyType+='<br /><span class="fa-solid fa-sliders"></span><label id="difficultyHybrid"></label>';
           return '<div class="card-header"><strong>#{settings.localization.difficulty}</strong></div><div class="card-body"><div id="difficultyPanelLoading" class="header-panel"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div><div id="difficultypanel" class="header-panel" style="display:none;"><span class="fa-solid fa-sliders"></span>'+difficultyType+'</div></div>';
         }
+        function getMarketChartPanel(){
+            return '<div class="card-header"><strong>Market Chart</strong></div><div class="card-body"><div id="marketChartPanelLoading" class="header-panel"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div><div id="marketchartpanel" class="header-panel" style="display:none;"><span class="fa-solid fa-sliders"></span>#{settings.coin.symbol} PRICE</div></div>';
+        }
         function getMasternodesPanel() {
           return '<div class="card-header"><strong>#{settings.localization.masternodecount}</strong></div><div class="card-body"><div id="masternodePanelLoading" class="header-panel"><i class="fa-solid fa-spinner fa-spin-pulse"></i></div><div id="masternodepanel" class="header-panel" style="display:none;"><span id="spnMasternodeCountOnline" class="fa-solid fa-circle-check" data-bs-toggle="tooltip" data-bs-placement="top"></span><label id="masternodeCountOnline" data-bs-toggle="tooltip" data-bs-placement="top"></label><label>&nbsp;/&nbsp;</label><label id="masternodeCountOffline" data-bs-toggle="tooltip" data-bs-placement="top"></label><span id="spnMasternodeCountOffline" class="fa-solid fa-triangle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top"></span></div></div>';
         }
@@ -379,6 +382,9 @@ html(lang='en')
               break;
             case "difficulty_panel":
               sReturn = getDifficultyPanel();
+              break;
+            case "marketprice_panel":
+              sReturn = getMarketChartPanel();
               break;
             case "masternodes_panel":
               sReturn = getMasternodesPanel();
@@ -478,6 +484,10 @@ html(lang='en')
             }
 
             showTopPanelData('difficultypanel', 'difficultyPanelLoading');
+
+            $("#marketchartpanel").html('iframe(src="https://coinpaprika.com/coin/nux-nusacoin/embed/?interval=0modules[]=chart&nightMode=true&primaryCurrency=USD&updateActive=false&volumeVisible=false" width="150" frameborder="0")');
+
+            showTopPanelData('marketchartpanel', 'marketChartPanelLoading');
 
             if (hashrateString == null || hashrateString == '' || hashrateString == '-')
               $("#hashrate").html('-');

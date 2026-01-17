@@ -119,6 +119,13 @@ block content
             else
               .sub-page-header.text-muted=settings.localization.mkt_description.replace('{1}', marketdata.coin + '/' + marketdata.exchange).replace('{2}', marketdata.market_name)
       .cardSpacer.clearfix
+      .row
+        .col-md-12.cardSpacer
+          .card.card-default.border-0
+            .card-header
+              strong Market Chart
+            .card-body.text-center
+              iframe(src="https://coinpaprika.com/coin/nux-nusacoin/embed/?interval=0&modules[]=chart&nightMode=true&primaryCurrency=USD&updateActive=false&volumeVisible=false", height="490", width="335" , frameborder="0")
     if settings.markets_page.show_market_select == true && settings.market_count > 1
       .row
         .col-md-12.cardSpacer

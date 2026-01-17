@@ -1,14 +1,14 @@
 var express = require('express'),
-    path = require('path'),
-    nodeapi = require('./lib/nodeapi'),
-    favicon = require('serve-favicon'),
-    logger = require('morgan'),
-    cookieParser = require('cookie-parser'),
-    settings = require('./lib/settings'),
-    routes = require('./routes/index'),
-    lib = require('./lib/explorer'),
-    db = require('./lib/database'),
-    package_metadata = require('./package.json');
+  path = require('path'),
+  nodeapi = require('./lib/nodeapi'),
+  favicon = require('serve-favicon'),
+  logger = require('morgan'),
+  cookieParser = require('cookie-parser'),
+  settings = require('./lib/settings'),
+  routes = require('./routes/index'),
+  lib = require('./lib/explorer'),
+  db = require('./lib/database'),
+  package_metadata = require('./package.json');
 var app = express();
 var apiAccessList = [];
 var viewPaths = [path.join(__dirname, 'views')]
@@ -18,16 +18,16 @@ const { exec } = require('child_process');
 // pass wallet rpc connection info to nodeapi
 nodeapi.setWalletDetails(settings.wallet);
 // dynamically build the nodeapi cmd access list by adding all non-blockchain-specific api cmds that have a value
-Object.keys(settings.api_cmds).forEach(function(key, index, map) {
+Object.keys(settings.api_cmds).forEach(function (key, index, map) {
   if (key != 'use_rpc' && key != 'rpc_concurrent_tasks' && settings.api_cmds[key] != null && settings.api_cmds[key] != '')
     apiAccessList.push(key);
 });
 // dynamically find and add additional blockchain_specific api cmds
-Object.keys(settings.blockchain_specific).forEach(function(key, index, map) {
+Object.keys(settings.blockchain_specific).forEach(function (key, index, map) {
   // check if this feature is enabled and has api cmds
   if (settings.blockchain_specific[key].enabled == true && Object.keys(settings.blockchain_specific[key]).indexOf('api_cmds') > -1) {
     // add all blockchain specific api cmds that have a value
-    Object.keys(settings.blockchain_specific[key]['api_cmds']).forEach(function(key2, index, map) {
+    Object.keys(settings.blockchain_specific[key]['api_cmds']).forEach(function (key2, index, map) {
       if (settings.blockchain_specific[key]['api_cmds'][key2] != null && settings.blockchain_specific[key]['api_cmds'][key2] != '')
         apiAccessList.push(key2);
     });
@@ -39,7 +39,7 @@ nodeapi.setAccess('only', apiAccessList);
 
 // determine if http traffic should be forwarded to https
 if (settings.webserver.tls.enabled == true && settings.webserver.tls.always_redirect == true) {
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     if (req.secure) {
       // continue without redirecting
       next();
@@ -55,7 +55,7 @@ if (settings.webserver.tls.enabled == true && settings.webserver.tls.always_redi
 
 // determine if cors should be enabled
 if (settings.webserver.cors.enabled == true) {
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", settings.webserver.cors.corsorigin);
     res.header('Access-Control-Allow-Methods', 'DELETE, PUT, GET, POST');
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -77,7 +77,7 @@ settings.plugins.allowed_plugins.forEach(function (plugin) {
         let localPluginSettings = require(`./plugins/${pluginName}/lib/local_plugin_settings`);
 
         // loop through all local plugin settings
-        Object.keys(localPluginSettings).forEach(function(key, index, map) {
+        Object.keys(localPluginSettings).forEach(function (key, index, map) {
           // check if this is a known setting type that should be brought into the main settings
           if (key.endsWith('_page') && typeof localPluginSettings[key] === 'object' && localPluginSettings[key]['enabled'] == true) {
             // this is a page setting
@@ -100,7 +100,7 @@ settings.plugins.allowed_plugins.forEach(function (plugin) {
             // check if there is an ext section
             if (localPluginSettings[key]['ext'] != null) {
               // loop through all ext apis for this plugin
-              Object.keys(localPluginSettings[key]['ext']).forEach(function(extKey, extIndex, extMap) {
+              Object.keys(localPluginSettings[key]['ext']).forEach(function (extKey, extIndex, extMap) {
                 // add the name of the api into the object
                 localPluginSettings[key]['ext'][extKey]['api_name'] = extKey;
 
@@ -150,7 +150,7 @@ app.set('view engine', 'pug');
 var default_favicon = '';
 
 // loop through the favicons
-Object.keys(settings.shared_pages.favicons).forEach(function(key, index, map) {
+Object.keys(settings.shared_pages.favicons).forEach(function (key, index, map) {
   // remove the public directory from the path if exists
   if (settings.shared_pages.favicons[key] != null && settings.shared_pages.favicons[key].indexOf('public/') > -1)
     settings.shared_pages.favicons[key] = settings.shared_pages.favicons[key].replace(/public\//g, '');
@@ -181,41 +181,41 @@ pluginRoutes.forEach(function (r) {
 });
 
 // post method to claim an address using verifymessage functionality
-app.post('/claim', function(req, res) {
+app.post('/claim', function (req, res) {
   // validate captcha if applicable
-  validate_captcha(settings.claim_address_page.enable_captcha, req.body, function(captcha_error) {
+  validate_captcha(settings.claim_address_page.enable_captcha, req.body, function (captcha_error) {
     // check if there was a problem with captcha
     if (captcha_error) {
       // show the captcha error
-      res.json({'status': 'failed', 'error': true, 'message': 'The captcha validation failed'});
+      res.json({ 'status': 'failed', 'error': true, 'message': 'The captcha validation failed' });
     } else {
       // filter bad words if enabled
-      filter_bad_words((req.body.message == null || req.body.message == '' ? '' : req.body.message), function(claim_error, message) {
+      filter_bad_words((req.body.message == null || req.body.message == '' ? '' : req.body.message), function (claim_error, message) {
         // check if there was an error or if the message was filtered
         if (claim_error != null) {
           // an error occurred with loading the bad-words filter
-          res.json({'status': 'failed', 'error': true, 'message': 'Error loading the bad-words filter: ' + claim_error});
+          res.json({ 'status': 'failed', 'error': true, 'message': 'Error loading the bad-words filter: ' + claim_error });
         } else if (message == req.body.message) {
           // call the verifymessage api
-          lib.verify_message(req.body.address, req.body.signature, req.body.message, function(body) {
+          lib.verify_message(req.body.address, req.body.signature, req.body.message, function (body) {
             if (body == false)
-              res.json({'status': 'failed', 'error': true, 'message': 'Invalid signature'});
+              res.json({ 'status': 'failed', 'error': true, 'message': 'Invalid signature' });
             else if (body == true) {
-              db.update_claim_name(req.body.address, req.body.message, function(val) {
+              db.update_claim_name(req.body.address, req.body.message, function (val) {
                 // check if the update was successful
                 if (val == '')
-                  res.json({'status': 'success'});
+                  res.json({ 'status': 'success' });
                 else if (val == 'no_address')
-                  res.json({'status': 'failed', 'error': true, 'message': 'Wallet address ' + req.body.address + ' is not valid or does not have any transactions'});
+                  res.json({ 'status': 'failed', 'error': true, 'message': 'Wallet address ' + req.body.address + ' is not valid or does not have any transactions' });
                 else
-                  res.json({'status': 'failed', 'error': true, 'message': 'Wallet address or signature is invalid'});
+                  res.json({ 'status': 'failed', 'error': true, 'message': 'Wallet address or signature is invalid' });
               });
             } else
-              res.json({'status': 'failed', 'error': true, 'message': 'Wallet address or signature is invalid'});
+              res.json({ 'status': 'failed', 'error': true, 'message': 'Wallet address or signature is invalid' });
           });
         } else {
           // message was filtered which would change the signature
-          res.json({'status': 'failed', 'error': true, 'message': 'Display name contains bad words and cannot be saved: ' + message});
+          res.json({ 'status': 'failed', 'error': true, 'message': 'Display name contains bad words and cannot be saved: ' + message });
         }
       });
     }
@@ -230,7 +230,7 @@ function validate_captcha(captcha_enabled, data, cb) {
       if (data.google_recaptcha3 != null) {
         const request = require('postman-request');
 
-        request({uri: 'https://www.google.com/recaptcha/api/siteverify?secret=' + settings.captcha.google_recaptcha3.secret_key + '&response=' + data.google_recaptcha3, json: true}, function (error, response, body) {
+        request({ uri: 'https://www.google.com/recaptcha/api/siteverify?secret=' + settings.captcha.google_recaptcha3.secret_key + '&response=' + data.google_recaptcha3, json: true }, function (error, response, body) {
           if (error) {
             // an error occurred while trying to validate the captcha
             return cb(true);
@@ -253,7 +253,7 @@ function validate_captcha(captcha_enabled, data, cb) {
       if (data.google_recaptcha2 != null) {
         const request = require('postman-request');
 
-        request({uri: 'https://www.google.com/recaptcha/api/siteverify?secret=' + settings.captcha.google_recaptcha2.secret_key + '&response=' + data.google_recaptcha2, json: true}, function (error, response, body) {
+        request({ uri: 'https://www.google.com/recaptcha/api/siteverify?secret=' + settings.captcha.google_recaptcha2.secret_key + '&response=' + data.google_recaptcha2, json: true }, function (error, response, body) {
           if (error) {
             // an error occurred while trying to validate the captcha
             return cb(true);
@@ -276,7 +276,7 @@ function validate_captcha(captcha_enabled, data, cb) {
       if (data.hcaptcha != null) {
         const request = require('postman-request');
 
-        request({uri: 'https://hcaptcha.com/siteverify?secret=' + settings.captcha.hcaptcha.secret_key + '&response=' + data.hcaptcha, json: true}, function (error, response, body) {
+        request({ uri: 'https://hcaptcha.com/siteverify?secret=' + settings.captcha.hcaptcha.secret_key + '&response=' + data.hcaptcha, json: true }, function (error, response, body) {
           if (error) {
             // an error occurred while trying to validate the captcha
             return cb(true);
@@ -309,17 +309,17 @@ function filter_bad_words(msg, cb) {
   // check if the bad-words filter is enabled
   if (settings.claim_address_page.enable_bad_word_filter == true) {
     // import the bad-words dependency
-    import('bad-words').then(function(module) {
+    import('bad-words').then(function (module) {
       // load the bad-words filter
       const bad_word_lib = module.Filter;
       const bad_word_filter = new bad_word_lib();
 
-       // return the filtered msg
+      // return the filtered msg
       return cb(null, bad_word_filter.clean(msg));
     })
-    .catch(function(err) {
-      return cb(err, null);
-    });
+      .catch(function (err) {
+        return cb(err, null);
+      });
   } else {
     // return the msg without filtering for bad words
     return cb(null, msg);
@@ -327,12 +327,12 @@ function filter_bad_words(msg, cb) {
 }
 
 // post method to receive data from a plugin
-app.post('/plugin-request', function(req, res) {
+app.post('/plugin-request', function (req, res) {
   const pluginLockName = 'plugin';
 
   // check if another plugin request is already running
   if (lib.is_locked([pluginLockName], true) == true)
-    res.json({'status': 'failed', 'error': true, 'message': `Another plugin request is already running..`});
+    res.json({ 'status': 'failed', 'error': true, 'message': `Another plugin request is already running..` });
   else {
     // create a new plugin lock before checking the rest of the locks to minimize problems with running scripts at the same time
     lib.create_lock(pluginLockName);
@@ -340,7 +340,7 @@ app.post('/plugin-request', function(req, res) {
     // check the backup, restore and delete locks since those functions would be problematic when updating data
     if (lib.is_locked(['backup', 'restore', 'delete'], true) == true) {
       lib.remove_lock(pluginLockName);
-      res.json({'status': 'failed', 'error': true, 'message': `Another script has locked the database..`});
+      res.json({ 'status': 'failed', 'error': true, 'message': `Another script has locked the database..` });
     } else {
       // all lock tests passed. OK to run plugin request
 
@@ -356,22 +356,22 @@ app.post('/plugin-request', function(req, res) {
       // check if the dataObject was populated
       if (dataObject == null || JSON.stringify(dataObject) === '{}') {
         lib.remove_lock(pluginLockName);
-        res.json({'status': 'failed', 'error': true, 'message': 'POST data is missing or not in the correct format'});
+        res.json({ 'status': 'failed', 'error': true, 'message': 'POST data is missing or not in the correct format' });
       } else {
         // check if the plugin secret code is correct and if the coin name was specified
         if (dataObject.plugin_data == null || settings.plugins.plugin_secret_code != dataObject.plugin_data.secret_code) {
           lib.remove_lock(pluginLockName);
-          res.json({'status': 'failed', 'error': true, 'message': 'Secret code is missing or incorrect'});
+          res.json({ 'status': 'failed', 'error': true, 'message': 'Secret code is missing or incorrect' });
         } else if (dataObject.plugin_data.coin_name == null || dataObject.plugin_data.coin_name == '') {
           lib.remove_lock(pluginLockName);
-          res.json({'status': 'failed', 'error': true, 'message': 'Coin name is missing'});
+          res.json({ 'status': 'failed', 'error': true, 'message': 'Coin name is missing' });
         } else {
           const tableData = dataObject.table_data;
 
           // check if the table_data seems valid
           if (tableData == null || !Array.isArray(tableData)) {
             lib.remove_lock(pluginLockName);
-            res.json({'status': 'failed', 'error': true, 'message': `table_data from POST data is missing or empty`});
+            res.json({ 'status': 'failed', 'error': true, 'message': `table_data from POST data is missing or empty` });
           } else {
             const pluginName = (dataObject.plugin_data.plugin_name == null ? '' : dataObject.plugin_data.plugin_name);
             const pluginObj = settings.plugins.allowed_plugins.find(item => item.plugin_name === pluginName && pluginName != '');
@@ -379,22 +379,22 @@ app.post('/plugin-request', function(req, res) {
             // check if the requested plugin was found in the settings
             if (pluginObj == null) {
               lib.remove_lock(pluginLockName);
-              res.json({'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is not defined in settings`});
+              res.json({ 'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is not defined in settings` });
             } else {
               // check if the requested plugin is enabled
               if (!pluginObj.enabled) {
                 lib.remove_lock(pluginLockName);
-                res.json({'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is not enabled`});
+                res.json({ 'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is not enabled` });
               } else {
                 // check if the plugin exists in the plugins directory
                 if (!db.fs.existsSync(`./plugins/${pluginName}`)) {
                   lib.remove_lock(pluginLockName);
-                  res.json({'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is not installed in the plugins directory`});
+                  res.json({ 'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is not installed in the plugins directory` });
                 } else {
                   // check if the plugin's server_functions file exists
                   if (!db.fs.existsSync(`./plugins/${pluginName}/lib/server_functions.js`)) {
                     lib.remove_lock(pluginLockName);
-                    res.json({'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is missing the /lib/server_functions.js file`});
+                    res.json({ 'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is missing the /lib/server_functions.js file` });
                   } else {
                     // load the server_functions.js file from the plugin
                     const serverFunctions = require(`./plugins/${pluginName}/lib/server_functions`);
@@ -402,10 +402,10 @@ app.post('/plugin-request', function(req, res) {
                     // check if the process_plugin_request function exists
                     if (typeof serverFunctions.process_plugin_request !== 'function') {
                       lib.remove_lock(pluginLockName);
-                      res.json({'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is missing the process_plugin_request function`});
+                      res.json({ 'status': 'failed', 'error': true, 'message': `Plugin '${pluginName}' is missing the process_plugin_request function` });
                     } else {
                       // call the process_plugin_request function to process the new table data
-                      serverFunctions.process_plugin_request(dataObject.plugin_data.coin_name, tableData, settings.sync.update_timeout, function(response) {
+                      serverFunctions.process_plugin_request(dataObject.plugin_data.coin_name, tableData, settings.sync.update_timeout, function (response) {
                         lib.remove_lock(pluginLockName);
                         res.json(response);
                       });
@@ -422,7 +422,7 @@ app.post('/plugin-request', function(req, res) {
 });
 
 // extended apis
-app.use('/ext/getmoneysupply', function(req, res) {
+app.use('/ext/getmoneysupply', function (req, res) {
   // check if the getmoneysupply api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getmoneysupply.enabled == true) {
     // lookup stats
@@ -434,20 +434,20 @@ app.use('/ext/getmoneysupply', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getaddress/:hash', function(req, res) {
+app.use('/ext/getaddress/:hash', function (req, res) {
   // check if the getaddress api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getaddress.enabled == true) {
-    db.get_address(req.params.hash, false, function(address) {
-      db.get_address_txs_ajax(req.params.hash, 0, settings.api_page.public_apis.ext.getaddresstxs.max_items_per_query, function(txs, count) {
+    db.get_address(req.params.hash, false, function (address) {
+      db.get_address_txs_ajax(req.params.hash, 0, settings.api_page.public_apis.ext.getaddresstxs.max_items_per_query, function (txs, count) {
         if (address) {
           var last_txs = [];
 
           for (i = 0; i < txs.length; i++) {
             if (typeof txs[i].txid !== "undefined") {
               var out = 0,
-                  vin = 0,
-                  tx_type = 'vout',
-                  row = {};
+                vin = 0,
+                tx_type = 'vout',
+                row = {};
 
               txs[i].vout.forEach(function (r) {
                 if (r.addresses == req.params.hash)
@@ -478,28 +478,28 @@ app.use('/ext/getaddress/:hash', function(req, res) {
 
           res.send(a_ext);
         } else
-          res.send({ error: 'address not found.', hash: req.params.hash});
+          res.send({ error: 'address not found.', hash: req.params.hash });
       });
     });
   } else
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/gettx/:txid', function(req, res) {
+app.use('/ext/gettx/:txid', function (req, res) {
   // check if the gettx api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.gettx.enabled == true) {
     var txid = req.params.txid;
 
-    db.get_tx(txid, function(tx) {
+    db.get_tx(txid, function (tx) {
       if (tx) {
-        lib.get_blockcount(function(blockcount) {
-          res.send({ active: 'tx', tx: tx, confirmations: (blockcount - tx.blockindex + 1), blockcount: (blockcount ? blockcount : 0)});
+        lib.get_blockcount(function (blockcount) {
+          res.send({ active: 'tx', tx: tx, confirmations: (blockcount - tx.blockindex + 1), blockcount: (blockcount ? blockcount : 0) });
         });
       } else {
-        lib.get_rawtransaction(txid, function(rtx) {
+        lib.get_rawtransaction(txid, function (rtx) {
           if (rtx && rtx.txid) {
-            lib.prepare_vin(rtx, function(vin, tx_type_vin) {
-              lib.prepare_vout(rtx.vout, rtx.txid, vin, ((typeof rtx.vjoinsplit === 'undefined' || rtx.vjoinsplit == null) ? [] : rtx.vjoinsplit), function(rvout, rvin, tx_type_vout) {
+            lib.prepare_vin(rtx, function (vin, tx_type_vin) {
+              lib.prepare_vout(rtx.vout, rtx.txid, vin, ((typeof rtx.vjoinsplit === 'undefined' || rtx.vjoinsplit == null) ? [] : rtx.vjoinsplit), function (rvout, rvin, tx_type_vout) {
                 const total = lib.calculate_total(rvout);
 
                 if (!rtx.confirmations > 0) {
@@ -513,7 +513,7 @@ app.use('/ext/gettx/:txid', function(req, res) {
                     blockindex: -1
                   };
 
-                  res.send({ active: 'tx', tx: utx, confirmations: rtx.confirmations, blockcount:-1});
+                  res.send({ active: 'tx', tx: utx, confirmations: rtx.confirmations, blockcount: -1 });
                 } else {
                   var utx = {
                     txid: rtx.txid,
@@ -525,14 +525,14 @@ app.use('/ext/gettx/:txid', function(req, res) {
                     blockindex: rtx.blockheight
                   };
 
-                  lib.get_blockcount(function(blockcount) {
-                    res.send({ active: 'tx', tx: utx, confirmations: rtx.confirmations, blockcount: (blockcount ? blockcount : 0)});
+                  lib.get_blockcount(function (blockcount) {
+                    res.send({ active: 'tx', tx: utx, confirmations: rtx.confirmations, blockcount: (blockcount ? blockcount : 0) });
                   });
                 }
               });
             });
           } else
-            res.send({ error: 'tx not found.', hash: txid});
+            res.send({ error: 'tx not found.', hash: txid });
         });
       }
     });
@@ -540,10 +540,10 @@ app.use('/ext/gettx/:txid', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getbalance/:hash', function(req, res) {
+app.use('/ext/getbalance/:hash', function (req, res) {
   // check if the getbalance api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getbalance.enabled == true) {
-    db.get_address(req.params.hash, false, function(address) {
+    db.get_address(req.params.hash, false, function (address) {
       if (address) {
         res.setHeader('content-type', 'text/plain');
         res.end((address.balance / 100000000).toString().replace(/(^-+)/mg, ''));
@@ -554,12 +554,12 @@ app.use('/ext/getbalance/:hash', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getdistribution', function(req, res) {
+app.use('/ext/getdistribution', function (req, res) {
   // check if the getdistribution api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getdistribution.enabled == true) {
-    db.get_richlist(settings.coin.name, function(richlist) {
-      db.get_stats(settings.coin.name, function(stats) {
-        db.get_distribution(richlist, stats, function(dist) {
+    db.get_richlist(settings.coin.name, function (richlist) {
+      db.get_stats(settings.coin.name, function (stats) {
+        db.get_distribution(richlist, stats, function (dist) {
           res.send(dist);
         });
       });
@@ -568,7 +568,7 @@ app.use('/ext/getdistribution', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getcurrentprice', function(req, res) {
+app.use('/ext/getcurrentprice', function (req, res) {
   // check if the getcurrentprice api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getcurrentprice.enabled == true) {
     db.get_stats(settings.coin.name, function (stats) {
@@ -581,7 +581,7 @@ app.use('/ext/getcurrentprice', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getbasicstats', function(req, res) {
+app.use('/ext/getbasicstats', function (req, res) {
   // check if the getbasicstats api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getbasicstats.enabled == true) {
     // lookup stats
@@ -591,7 +591,7 @@ app.use('/ext/getbasicstats', function(req, res) {
       // check if the masternode count api is enabled
       if (settings.api_page.public_apis.rpc.getmasternodecount.enabled == true && settings.api_cmds['getmasternodecount'] != null && settings.api_cmds['getmasternodecount'] != '') {
         // masternode count api is available
-        lib.get_masternodecount(function(masternodestotal) {
+        lib.get_masternodecount(function (masternodestotal) {
           eval('var p_ext = { "block_count": (stats.count ? stats.count : 0), "money_supply": (stats.supply ? stats.supply : 0), "last_price_' + currency.toLowerCase() + '": stats.last_price, "last_price_usd": stats.last_usd_price, "masternode_count": masternodestotal.total }');
           res.send(p_ext);
         });
@@ -605,12 +605,12 @@ app.use('/ext/getbasicstats', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getlasttxs/:min', function(req, res) {
+app.use('/ext/getlasttxs/:min', function (req, res) {
   // check if the getlasttxs api is enabled or else check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
   if ((settings.api_page.enabled == true && settings.api_page.public_apis.ext.getlasttxs.enabled == true) || (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1)) {
     var min = req.params.min, start, length, internal = false;
     // split url suffix by forward slash and remove blank entries
-    var split = req.url.split('/').filter(function(v) { return v; });
+    var split = req.url.split('/').filter(function (v) { return v; });
     // determine how many parameters were passed
     switch (split.length) {
       case 2:
@@ -640,15 +640,15 @@ app.use('/ext/getlasttxs/:min', function(req, res) {
     if (typeof start === 'undefined' || isNaN(start) || start < 0)
       start = 0;
     if (typeof min === 'undefined' || isNaN(min) || min < 0)
-      min  = 0;
+      min = 0;
     else
-      min  = (min * 100000000);
+      min = (min * 100000000);
 
-    db.get_last_txs(start, length, min, internal, function(data, count) {
+    db.get_last_txs(start, length, min, internal, function (data, count) {
       // check if this is an internal request
       if (internal) {
         // display data formatted for internal datatable
-        res.json({"data": data, "recordsTotal": count, "recordsFiltered": count});
+        res.json({ "data": data, "recordsTotal": count, "recordsFiltered": count });
       } else {
         // display data in more readable format for public api
         res.json(data);
@@ -658,12 +658,12 @@ app.use('/ext/getlasttxs/:min', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getaddresstxs/:address/:start/:length', function(req, res) {
+app.use('/ext/getaddresstxs/:address/:start/:length', function (req, res) {
   // check if the getaddresstxs api is enabled or else check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
   if ((settings.api_page.enabled == true && settings.api_page.public_apis.ext.getaddresstxs.enabled == true) || (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1)) {
     var internal = false;
     // split url suffix by forward slash and remove blank entries
-    var split = req.url.split('/').filter(function(v) { return v; });
+    var split = req.url.split('/').filter(function (v) { return v; });
     // check if this is an internal request
     if (split.length > 0 && split[0] == 'internal')
       internal = true;
@@ -673,11 +673,11 @@ app.use('/ext/getaddresstxs/:address/:start/:length', function(req, res) {
     if (typeof req.params.start === 'undefined' || isNaN(req.params.start) || req.params.start < 0)
       req.params.start = 0;
     if (typeof req.params.min === 'undefined' || isNaN(req.params.min) || req.params.min < 0)
-      req.params.min  = 0;
+      req.params.min = 0;
     else
-      req.params.min  = (req.params.min * 100000000);
+      req.params.min = (req.params.min * 100000000);
 
-    db.get_address_txs_ajax(req.params.address, req.params.start, req.params.length, function(txs, count) {
+    db.get_address_txs_ajax(req.params.address, req.params.start, req.params.length, function (txs, count) {
       var data = [];
 
       for (i = 0; i < txs.length; i++) {
@@ -685,12 +685,12 @@ app.use('/ext/getaddresstxs/:address/:start/:length', function(req, res) {
           var out = 0;
           var vin = 0;
 
-          txs[i].vout.forEach(function(r) {
+          txs[i].vout.forEach(function (r) {
             if (r.addresses == req.params.address)
               out += r.amount;
           });
 
-          txs[i].vin.forEach(function(s) {
+          txs[i].vin.forEach(function (s) {
             if (s.addresses == req.params.address)
               vin += s.amount;
           });
@@ -720,7 +720,7 @@ app.use('/ext/getaddresstxs/:address/:start/:length', function(req, res) {
       // check if this is an internal request
       if (internal) {
         // display data formatted for internal datatable
-        res.json({"data": data, "recordsTotal": count, "recordsFiltered": count});
+        res.json({ "data": data, "recordsTotal": count, "recordsFiltered": count });
       } else {
         // display data in more readable format for public api
         res.json(data);
@@ -733,8 +733,8 @@ app.use('/ext/getaddresstxs/:address/:start/:length', function(req, res) {
 function get_connection_and_block_counts(get_data, cb) {
   // check if the connection and block counts should be returned
   if (get_data) {
-    lib.get_connectioncount(function(connections) {
-      lib.get_blockcount(function(blockcount) {
+    lib.get_connectioncount(function (connections) {
+      lib.get_blockcount(function (blockcount) {
         return cb(connections, blockcount);
       });
     });
@@ -742,7 +742,7 @@ function get_connection_and_block_counts(get_data, cb) {
     return cb(null, null);
 }
 
-app.use('/ext/getsummary', function(req, res) {
+app.use('/ext/getsummary', function (req, res) {
   const isInternal = (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1);
 
   // check if the getsummary api is enabled or else check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
@@ -750,7 +750,7 @@ app.use('/ext/getsummary', function(req, res) {
     // check if this is a footer-only method that should only return the connection count and block count
     if (req.headers['footer-only'] != null && req.headers['footer-only'] == 'true') {
       // only return the connection count and block count
-      get_connection_and_block_counts(true, function(connections, blockcount) {
+      get_connection_and_block_counts(true, function (connections, blockcount) {
         res.send({
           connections: (connections ? connections : '-'),
           blockcount: (blockcount ? blockcount : '-')
@@ -758,11 +758,11 @@ app.use('/ext/getsummary', function(req, res) {
       });
     } else {
       // get the connection and block counts only if this is NOT an internal call
-      get_connection_and_block_counts(!isInternal, function(connections, blockcount) {
-        lib.get_hashrate(function(hashrate) {
+      get_connection_and_block_counts(!isInternal, function (connections, blockcount) {
+        lib.get_hashrate(function (hashrate) {
           db.get_stats(settings.coin.name, function (stats) {
-            lib.get_masternodecount(function(masternodestotal) {
-              lib.get_difficulty(function(difficulty) {
+            lib.get_masternodecount(function (masternodestotal) {
+              lib.get_difficulty(function (difficulty) {
                 let difficultyHybrid = '';
 
                 if (difficulty && difficulty['proof-of-work']) {
@@ -815,11 +815,11 @@ app.use('/ext/getsummary', function(req, res) {
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getnetworkpeers', function(req, res) {
+app.use('/ext/getnetworkpeers', function (req, res) {
   // check if the getnetworkpeers api is enabled or else check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
   if ((settings.api_page.enabled == true && settings.api_page.public_apis.ext.getnetworkpeers.enabled == true) || (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1)) {
     // split url suffix by forward slash and remove blank entries
-    const split = req.url.split('/').filter(function(v) { return v; });
+    const split = req.url.split('/').filter(function (v) { return v; });
     let internal = false;
 
     // check if this is an internal request
@@ -827,10 +827,10 @@ app.use('/ext/getnetworkpeers', function(req, res) {
       internal = true;
 
     // get list of peers
-    db.get_peers(!internal, function(connection_peers, addnode_peers, onetry_peers) {
+    db.get_peers(!internal, function (connection_peers, addnode_peers, onetry_peers) {
       // return peer data
       if (internal)
-        res.json({'connection_peers': connection_peers, 'addnode_peers': addnode_peers, 'onetry_peers': onetry_peers});
+        res.json({ 'connection_peers': connection_peers, 'addnode_peers': addnode_peers, 'onetry_peers': onetry_peers });
       else {
         // remove ipv6 and table_type fields before outputting the api data
         connection_peers.forEach(function (peer) {
@@ -846,11 +846,11 @@ app.use('/ext/getnetworkpeers', function(req, res) {
 });
 
 // get the list of masternodes from local collection
-app.use('/ext/getmasternodelist', function(req, res) {
+app.use('/ext/getmasternodelist', function (req, res) {
   // check if the getmasternodelist api is enabled or else check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
   if ((settings.api_page.enabled == true && settings.api_page.public_apis.ext.getmasternodelist.enabled == true) || (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1)) {
     // get the masternode list from local collection
-    db.get_masternodes(function(masternodes) {
+    db.get_masternodes(function (masternodes) {
       // loop through masternode list and remove the mongo _id and __v keys
       for (i = 0; i < masternodes.length; i++) {
         delete masternodes[i]['_doc']['_id'];
@@ -865,10 +865,10 @@ app.use('/ext/getmasternodelist', function(req, res) {
 });
 
 // returns a list of masternode reward txs for a single masternode address from a specific block height
-app.use('/ext/getmasternoderewards/:hash/:since', function(req, res) {
+app.use('/ext/getmasternoderewards/:hash/:since', function (req, res) {
   // check if the getmasternoderewards api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getmasternoderewards.enabled == true) {
-    db.get_masternode_rewards(req.params.hash, req.params.since, function(rewards) {
+    db.get_masternode_rewards(req.params.hash, req.params.since, function (rewards) {
       if (rewards != null) {
         // loop through the tx list to fix vout values and remove unnecessary data such as the always empty vin array and the mongo _id and __v keys
         for (i = 0; i < rewards.length; i++) {
@@ -884,29 +884,29 @@ app.use('/ext/getmasternoderewards/:hash/:since', function(req, res) {
         // return list of masternode rewards
         res.json(rewards);
       } else
-        res.send({error: "failed to retrieve masternode rewards", hash: req.params.hash, since: req.params.since});
+        res.send({ error: "failed to retrieve masternode rewards", hash: req.params.hash, since: req.params.since });
     });
   } else
     res.end(settings.localization.method_disabled);
 });
 
 // returns the total masternode rewards received for a single masternode address from a specific block height
-app.use('/ext/getmasternoderewardstotal/:hash/:since', function(req, res) {
+app.use('/ext/getmasternoderewardstotal/:hash/:since', function (req, res) {
   // check if the getmasternoderewardstotal api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getmasternoderewardstotal.enabled == true) {
-    db.get_masternode_rewards_totals(req.params.hash, req.params.since, function(total_rewards) {
+    db.get_masternode_rewards_totals(req.params.hash, req.params.since, function (total_rewards) {
       if (total_rewards != null) {
         // return the total of masternode rewards
         res.json(total_rewards);
       } else
-        res.send({error: "failed to retrieve masternode rewards", hash: req.params.hash, since: req.params.since});
+        res.send({ error: "failed to retrieve masternode rewards", hash: req.params.hash, since: req.params.since });
     });
   } else
     res.end(settings.localization.method_disabled);
 });
 
 // get the list of orphans from local collection
-app.use('/ext/getorphanlist/:start/:length', function(req, res) {
+app.use('/ext/getorphanlist/:start/:length', function (req, res) {
   // check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
   if (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1) {
     // fix parameters
@@ -916,7 +916,7 @@ app.use('/ext/getorphanlist/:start/:length', function(req, res) {
       req.params.length = 10;
 
     // get the orphan list from local collection
-    db.get_orphans(req.params.start, req.params.length, function(orphans, count) {
+    db.get_orphans(req.params.start, req.params.length, function (orphans, count) {
       var data = [];
 
       for (i = 0; i < orphans.length; i++) {
@@ -932,14 +932,14 @@ app.use('/ext/getorphanlist/:start/:length', function(req, res) {
       }
 
       // display data formatted for internal datatable
-      res.json({"data": data, "recordsTotal": count, "recordsFiltered": count});
+      res.json({ "data": data, "recordsTotal": count, "recordsFiltered": count });
     });
   } else
     res.end(settings.localization.method_disabled);
 });
 
 // get the last updated date for a particular section
-app.use('/ext/getlastupdated/:section', function(req, res) {
+app.use('/ext/getlastupdated/:section', function (req, res) {
   // check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
   if (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1) {
     // fix parameters
@@ -951,18 +951,18 @@ app.use('/ext/getlastupdated/:section', function(req, res) {
       case 'movement':
         // lookup last updated date
         db.get_stats(settings.coin.name, function (stats) {
-          res.json({'last_updated_date': stats.blockchain_last_updated});
+          res.json({ 'last_updated_date': stats.blockchain_last_updated });
         });
         break;
       default:
-        res.send({error: 'Cannot find last updated date'});
+        res.send({ error: 'Cannot find last updated date' });
     }
   } else
     res.end(settings.localization.method_disabled);
 });
 
-app.use('/ext/getnetworkchartdata', function(req, res) {
-  db.get_network_chart_data(function(data) {
+app.use('/ext/getnetworkchartdata', function (req, res) {
+  db.get_network_chart_data(function (data) {
     if (data)
       res.send(data);
     else
@@ -970,7 +970,7 @@ app.use('/ext/getnetworkchartdata', function(req, res) {
   });
 });
 
-app.use('/system/restartexplorer', function(req, res, next) {
+app.use('/system/restartexplorer', function (req, res, next) {
   // check to ensure this special cmd is only executed by the local server
   if (req._remoteAddress != null && req._remoteAddress.indexOf('127.0.0.1') > -1) {
     // send a msg to the cluster process telling it to restart
@@ -1011,11 +1011,11 @@ if (settings.markets_page.enabled == true) {
             switch ((exMarket.market_url_case == null || exMarket.market_url_case == '' ? 'l' : exMarket.market_url_case.toLowerCase())) {
               case 'l':
               case 'lower':
-                isAlt = (exMarket.isAlt != null ? exMarket.isAlt({coin: coin_symbol.toLowerCase(), exchange: pair_symbol.toLowerCase()}) : false);
+                isAlt = (exMarket.isAlt != null ? exMarket.isAlt({ coin: coin_symbol.toLowerCase(), exchange: pair_symbol.toLowerCase() }) : false);
                 break;
               case 'u':
               case 'upper':
-                isAlt = (exMarket.isAlt != null ? exMarket.isAlt({coin: coin_symbol.toUpperCase(), exchange: pair_symbol.toUpperCase()}) : false);
+                isAlt = (exMarket.isAlt != null ? exMarket.isAlt({ coin: coin_symbol.toUpperCase(), exchange: pair_symbol.toUpperCase() }) : false);
                 break;
               default:
             }
@@ -1032,7 +1032,7 @@ if (settings.markets_page.enabled == true) {
         }
 
         // sort trading pairs by alt status
-        market_data[market_data.length - 1].trading_pairs.sort(function(a, b) {
+        market_data[market_data.length - 1].trading_pairs.sort(function (a, b) {
           if (a.isAlt < b.isAlt)
             return -1;
           else if (a.isAlt > b.isAlt)
@@ -1045,7 +1045,7 @@ if (settings.markets_page.enabled == true) {
   });
 
   // sort market data by market name
-  market_data.sort(function(a, b) {
+  market_data.sort(function (a, b) {
     var name1 = a.name.toLowerCase();
     var name2 = b.name.toLowerCase();
 
@@ -1155,6 +1155,7 @@ app.set('plugins', settings.plugins);
 var paneltotal = 5;
 var panelcount = (settings.shared_pages.page_header.panels.network_panel.enabled == true && settings.shared_pages.page_header.panels.network_panel.display_order > 0 ? 1 : 0) +
   (settings.shared_pages.page_header.panels.difficulty_panel.enabled == true && settings.shared_pages.page_header.panels.difficulty_panel.display_order > 0 ? 1 : 0) +
+  (settings.shared_pages.page_header.panels.marketprice_panel.enabled == true && settings.shared_pages.page_header.panels.marketprice_panel.display_order > 0 ? 1 : 0) +
   (settings.shared_pages.page_header.panels.masternodes_panel.enabled == true && settings.shared_pages.page_header.panels.masternodes_panel.display_order > 0 ? 1 : 0) +
   (settings.shared_pages.page_header.panels.coin_supply_panel.enabled == true && settings.shared_pages.page_header.panels.coin_supply_panel.display_order > 0 ? 1 : 0) +
   (settings.shared_pages.page_header.panels.price_panel.enabled == true && settings.shared_pages.page_header.panels.price_panel.display_order > 0 ? 1 : 0) +
@@ -1170,36 +1171,37 @@ app.set('paneloffset', paneltotal + 1 - panelcount);
 // determine panel order
 var panel_order = new Array();
 
-if (settings.shared_pages.page_header.panels.network_panel.enabled == true && settings.shared_pages.page_header.panels.network_panel.display_order > 0) panel_order.push({name: 'network_panel', val: settings.shared_pages.page_header.panels.network_panel.display_order});
-if (settings.shared_pages.page_header.panels.difficulty_panel.enabled == true && settings.shared_pages.page_header.panels.difficulty_panel.display_order > 0) panel_order.push({name: 'difficulty_panel', val: settings.shared_pages.page_header.panels.difficulty_panel.display_order});
-if (settings.shared_pages.page_header.panels.masternodes_panel.enabled == true && settings.shared_pages.page_header.panels.masternodes_panel.display_order > 0) panel_order.push({name: 'masternodes_panel', val: settings.shared_pages.page_header.panels.masternodes_panel.display_order});
-if (settings.shared_pages.page_header.panels.coin_supply_panel.enabled == true && settings.shared_pages.page_header.panels.coin_supply_panel.display_order > 0) panel_order.push({name: 'coin_supply_panel', val: settings.shared_pages.page_header.panels.coin_supply_panel.display_order});
-if (settings.shared_pages.page_header.panels.price_panel.enabled == true && settings.shared_pages.page_header.panels.price_panel.display_order > 0) panel_order.push({name: 'price_panel', val: settings.shared_pages.page_header.panels.price_panel.display_order});
-if (settings.shared_pages.page_header.panels.usd_price_panel.enabled == true && settings.shared_pages.page_header.panels.usd_price_panel.display_order > 0) panel_order.push({name: 'usd_price_panel', val: settings.shared_pages.page_header.panels.usd_price_panel.display_order});
-if (settings.shared_pages.page_header.panels.market_cap_panel.enabled == true && settings.shared_pages.page_header.panels.market_cap_panel.display_order > 0) panel_order.push({name: 'market_cap_panel', val: settings.shared_pages.page_header.panels.market_cap_panel.display_order});
-if (settings.shared_pages.page_header.panels.usd_market_cap_panel.enabled == true && settings.shared_pages.page_header.panels.usd_market_cap_panel.display_order > 0) panel_order.push({name: 'usd_market_cap_panel', val: settings.shared_pages.page_header.panels.usd_market_cap_panel.display_order});
-if (settings.shared_pages.page_header.panels.logo_panel.enabled == true && settings.shared_pages.page_header.panels.logo_panel.display_order > 0) panel_order.push({name: 'logo_panel', val: settings.shared_pages.page_header.panels.logo_panel.display_order});
-if (settings.shared_pages.page_header.panels.spacer_panel_1.enabled == true && settings.shared_pages.page_header.panels.spacer_panel_1.display_order > 0) panel_order.push({name: 'spacer_panel_1', val: settings.shared_pages.page_header.panels.spacer_panel_1.display_order});
-if (settings.shared_pages.page_header.panels.spacer_panel_2.enabled == true && settings.shared_pages.page_header.panels.spacer_panel_2.display_order > 0) panel_order.push({name: 'spacer_panel_2', val: settings.shared_pages.page_header.panels.spacer_panel_2.display_order});
-if (settings.shared_pages.page_header.panels.spacer_panel_3.enabled == true && settings.shared_pages.page_header.panels.spacer_panel_3.display_order > 0) panel_order.push({name: 'spacer_panel_3', val: settings.shared_pages.page_header.panels.spacer_panel_3.display_order});
+if (settings.shared_pages.page_header.panels.network_panel.enabled == true && settings.shared_pages.page_header.panels.network_panel.display_order > 0) panel_order.push({ name: 'network_panel', val: settings.shared_pages.page_header.panels.network_panel.display_order });
+if (settings.shared_pages.page_header.panels.difficulty_panel.enabled == true && settings.shared_pages.page_header.panels.difficulty_panel.display_order > 0) panel_order.push({ name: 'difficulty_panel', val: settings.shared_pages.page_header.panels.difficulty_panel.display_order });
+if (settings.shared_pages.page_header.panels.marketprice_panel.enabled == true && settings.shared_pages.page_header.panels.marketprice_panel.display_order > 0) panel_order.push({ name: 'marketprice_panel', val: settings.shared_pages.page_header.panels.marketprice_panel.display_order });
+if (settings.shared_pages.page_header.panels.masternodes_panel.enabled == true && settings.shared_pages.page_header.panels.masternodes_panel.display_order > 0) panel_order.push({ name: 'masternodes_panel', val: settings.shared_pages.page_header.panels.masternodes_panel.display_order });
+if (settings.shared_pages.page_header.panels.coin_supply_panel.enabled == true && settings.shared_pages.page_header.panels.coin_supply_panel.display_order > 0) panel_order.push({ name: 'coin_supply_panel', val: settings.shared_pages.page_header.panels.coin_supply_panel.display_order });
+if (settings.shared_pages.page_header.panels.price_panel.enabled == true && settings.shared_pages.page_header.panels.price_panel.display_order > 0) panel_order.push({ name: 'price_panel', val: settings.shared_pages.page_header.panels.price_panel.display_order });
+if (settings.shared_pages.page_header.panels.usd_price_panel.enabled == true && settings.shared_pages.page_header.panels.usd_price_panel.display_order > 0) panel_order.push({ name: 'usd_price_panel', val: settings.shared_pages.page_header.panels.usd_price_panel.display_order });
+if (settings.shared_pages.page_header.panels.market_cap_panel.enabled == true && settings.shared_pages.page_header.panels.market_cap_panel.display_order > 0) panel_order.push({ name: 'market_cap_panel', val: settings.shared_pages.page_header.panels.market_cap_panel.display_order });
+if (settings.shared_pages.page_header.panels.usd_market_cap_panel.enabled == true && settings.shared_pages.page_header.panels.usd_market_cap_panel.display_order > 0) panel_order.push({ name: 'usd_market_cap_panel', val: settings.shared_pages.page_header.panels.usd_market_cap_panel.display_order });
+if (settings.shared_pages.page_header.panels.logo_panel.enabled == true && settings.shared_pages.page_header.panels.logo_panel.display_order > 0) panel_order.push({ name: 'logo_panel', val: settings.shared_pages.page_header.panels.logo_panel.display_order });
+if (settings.shared_pages.page_header.panels.spacer_panel_1.enabled == true && settings.shared_pages.page_header.panels.spacer_panel_1.display_order > 0) panel_order.push({ name: 'spacer_panel_1', val: settings.shared_pages.page_header.panels.spacer_panel_1.display_order });
+if (settings.shared_pages.page_header.panels.spacer_panel_2.enabled == true && settings.shared_pages.page_header.panels.spacer_panel_2.display_order > 0) panel_order.push({ name: 'spacer_panel_2', val: settings.shared_pages.page_header.panels.spacer_panel_2.display_order });
+if (settings.shared_pages.page_header.panels.spacer_panel_3.enabled == true && settings.shared_pages.page_header.panels.spacer_panel_3.display_order > 0) panel_order.push({ name: 'spacer_panel_3', val: settings.shared_pages.page_header.panels.spacer_panel_3.display_order });
 
-panel_order.sort(function(a,b) { return a.val - b.val; });
+panel_order.sort(function (a, b) { return a.val - b.val; });
 
 for (var i = 1; i < 6; i++)
-  app.set('panel'+i.toString(), ((panel_order.length >= i) ? panel_order[i-1].name : ''));
+  app.set('panel' + i.toString(), ((panel_order.length >= i) ? panel_order[i - 1].name : ''));
 
 app.set('market_data', market_data);
 app.set('market_count', market_count);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handler - will print stacktrace when in development mode, otherwise no stacktraces will be leaked to the user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
@@ -1218,7 +1220,7 @@ if (settings.webserver.tls.enabled == true) {
         cert: db.fs.readFileSync(settings.webserver.tls.cert_file),
         ca: db.fs.readFileSync(settings.webserver.tls.chain_file)
       };
-    } catch(e) {
+    } catch (e) {
       console.warn('There was a problem reading tls certificates. Check that the certificate, chain and key paths are correct.');
     }
 
@@ -1240,7 +1242,7 @@ if (settings.webserver.tls.enabled == true) {
         httpd.setSecureContext(readCertsSync());
       }, 1000);
     });
-  } catch(e) {
+  } catch (e) {
     console.warn('There was a problem reading tls certificates. Check that the certificate, chain and key paths are correct.');
   }
 }
