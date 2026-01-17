@@ -120,7 +120,7 @@ block content
       .alert.alert-info(role='alert', style='text-align:center;')
         strong #{settings.localization.block_genesis}
     else
-      if image64 !== 'data:image/png;base64,'
+      if image64 !== 'data:image/png;base64,' && txs.length > 14
         .card.card-default.border-0
           .card-header
             strong Image Data

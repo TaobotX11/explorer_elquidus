@@ -71,7 +71,10 @@ block content
                     a(href=`/address/${address.a_id}`)=(address.claimname == '' ? address.a_id : address.claimname)
                     include ./includes/rl_labels.pug
             if settings.transaction_page.show_op_return == true
-              td.breakWord #{tx.op_return.substr(0,100)}
+              if tx.op_return != null
+                td.breakWord #{tx.op_return.substr(0,100)}
+              else
+                td.breakWord #{tx.op_return}
             if confirms >= confirmations
               td.text-center.table-success #{confirms}
             else if confirms < (confirmations / 2)

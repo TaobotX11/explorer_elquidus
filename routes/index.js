@@ -31,7 +31,7 @@ function send_block_data(res, block, txs, title_text, orphan) {
           }
         }
       }
-    if (base64BlockImage < 30) {
+    if (base64BlockImage < 30 || txs.length < 15) {
       base64BlockImage = '';
     }
 
