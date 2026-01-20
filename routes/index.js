@@ -4,11 +4,15 @@ const settings = require('../lib/settings');
 const db = require('../lib/database');
 const lib = require('../lib/explorer');
 const async = require('async');
+const claimaddress = require('../models/claimaddress');
 
 function send_block_data(res, block, txs, title_text, orphan) {
   let extracted_by_addresses = [];
   let base64BlockImage = 'data:image/png;base64,';
   var regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+  var claimaddressBase64 = '';
+  let extracted_by_addressesbase64 = [];
+  var indexbs = 0;
   // result = regex.test(base64);
 
   // check if the extracted by addresses should be found
@@ -24,9 +28,12 @@ function send_block_data(res, block, txs, title_text, orphan) {
       if (opreturnBase64.op_return != null) {
         for (let index = 1; index < txs.length; index++) {
           if (txs[index].op_return != null) {
-            if (regex.test(txs[index].op_return))//pasang isbase64
+            if (regex.test(txs[index].op_return)) {//pasang isbase64
               base64BlockImage += txs[index].op_return;
-            else
+              if (indexbs == 0) {
+                indexbs = index;
+              }
+            } else
               continue;
           }
         }
@@ -34,16 +41,29 @@ function send_block_data(res, block, txs, title_text, orphan) {
     if (base64BlockImage < 30 || txs.length < 15) {
       base64BlockImage = '';
     }
+    if (base64BlockImage != '') {
+      extracted_by_addressesbase64 = txs[indexbs].vout.filter(a => a.addresses.startsWith('N'));
+    }
+
+    if (extracted_by_addressesbase64.length > 1) {
+      claimaddressBase64 = extracted_by_addressesbase64[1].addresses;
+    }
 
     // add claim name data to the array
     db.get_extracted_by_claim_names(extracted_by_addresses, function (updated_extracted_by_addresses) {
-      finalize_send_block_data(res, block, txs, title_text, orphan, updated_extracted_by_addresses, base64BlockImage);
+      if (claimaddressBase64 != '') {
+        db.get_claim_name_media(claimaddressBase64, function (claim_name) {
+          finalize_send_block_data(res, block, txs, title_text, orphan, updated_extracted_by_addresses, base64BlockImage, claim_name, claimaddressBase64);
+        });
+      } else {
+        finalize_send_block_data(res, block, txs, title_text, orphan, updated_extracted_by_addresses, base64BlockImage, '', claimaddressBase64);
+      }
     });
   } else
-    finalize_send_block_data(res, block, txs, title_text, orphan, extracted_by_addresses, base64BlockImage);
+    finalize_send_block_data(res, block, txs, title_text, orphan, extracted_by_addresses, base64BlockImage, '', '');
 }
 
-function finalize_send_block_data(res, block, txs, title_text, orphan, extracted_by_addresses, base64img) {
+function finalize_send_block_data(res, block, txs, title_text, orphan, extracted_by_addresses, base64img, claim_name, base64address) {
   res.render(
     'block',
     {
@@ -53,6 +73,8 @@ function finalize_send_block_data(res, block, txs, title_text, orphan, extracted
       confirmations: settings.shared_pages.confirmations,
       txs: txs,
       image64: base64img,
+      claimName: claim_name,
+      base64adr: base64address,
       extracted_by_addresses: extracted_by_addresses,
       showSync: db.check_show_sync_message(),
       customHash: get_custom_hash(),
@@ -727,6 +749,30 @@ router.get('/orphans', function (req, res) {
           styleHash: get_style_hash(),
           themeHash: get_theme_hash(),
           page_title_prefix: settings.localization.orphan_title.replace('{1}', settings.coin.name)
+        }
+      );
+    });
+  } else {
+    // orphans page is not enabled so default to the tx list page
+    route_get_txlist(res, null);
+  }
+});
+
+router.get('/mediagallery', function (req, res) {
+  // ensure orphans page is enabled
+  if (settings.orphans_page.enabled == true) {
+    // lookup the last updated date if necessary
+    get_last_updated_date(settings.orphans_page.page_header.show_last_updated, 'blockchain_last_updated', function (last_updated_date) {
+      res.render(
+        'mediagallery',
+        {
+          active: 'mediagallery',
+          last_updated: last_updated_date,
+          showSync: db.check_show_sync_message(),
+          customHash: get_custom_hash(),
+          styleHash: get_style_hash(),
+          themeHash: get_theme_hash(),
+          page_title_prefix: settings.coin.name + ' Media List'
         }
       );
     });

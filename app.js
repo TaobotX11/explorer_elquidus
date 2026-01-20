@@ -905,6 +905,8 @@ app.use('/ext/getmasternoderewardstotal/:hash/:since', function (req, res) {
     res.end(settings.localization.method_disabled);
 });
 
+
+
 // get the list of orphans from local collection
 app.use('/ext/getorphanlist/:start/:length', function (req, res) {
   // check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
@@ -927,6 +929,36 @@ app.use('/ext/getorphanlist/:start/:length', function (req, res) {
         row.push(orphans[i].good_blockhash);
         row.push(orphans[i].prev_blockhash);
         row.push(orphans[i].next_blockhash);
+
+        data.push(row);
+      }
+
+      // display data formatted for internal datatable
+      res.json({ "data": data, "recordsTotal": count, "recordsFiltered": count });
+    });
+  } else
+    res.end(settings.localization.method_disabled);
+});
+
+app.use('/ext/getmedialist/:start/:length', function (req, res) {
+  // check the headers to see if it matches an internal ajax request from the explorer itself (TODO: come up with a more secure method of whitelisting ajax calls from the explorer)
+  if (req.headers['x-requested-with'] != null && req.headers['x-requested-with'].toLowerCase() == 'xmlhttprequest' && req.headers.referer != null && req.headers.accept.indexOf('text/javascript') > -1 && req.headers.accept.indexOf('application/json') > -1) {
+    // fix parameters
+    if (typeof req.params.start === 'undefined' || isNaN(req.params.start) || req.params.start < 0)
+      req.params.start = 0;
+    if (typeof req.params.length === 'undefined' || isNaN(req.params.length))
+      req.params.length = 10;
+
+    // get the orphan list from local collection
+    db.get_media(req.params.start, req.params.length, function (media, count) {
+      var data = [];
+
+      for (i = 0; i < media.length; i++) {
+        var row = [];
+
+        row.push(i);
+        row.push(media[i].a_id);
+        row.push(media[i].claim_name);
 
         data.push(row);
       }
