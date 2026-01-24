@@ -85,8 +85,24 @@ function finalize_send_block_data(res, block, txs, title_text, orphan, extracted
   );
 }
 
+function garbledToUtf8(garbledText) {
+  //const garbledText = "Ø¨Ø³Ù Ø§ÙÙÙ Ø§ÙØ±Ø­ÙÙ Ø§ÙØ±Ø­ÙÙ";
+
+  // 1. Convert string to a byte array (Uint8Array) using Latin-1 (ISO-8859-1)
+  //const encoder = new TextEncoder();
+  const uint8Array = new Uint8Array(
+    garbledText.split('').map(char => char.charCodeAt(0))
+  );
+
+  // 2. Decode the bytes back to string using UTF-8
+  const decoder = new TextDecoder('utf-8');
+  const correctedText = decoder.decode(uint8Array);
+  return correctedText;
+}
+
 function send_tx_data(res, tx, blockcount, orphan) {
   let extracted_by_addresses = [];
+
 
   // check if the extracted by addresses should be found
   if (
@@ -102,24 +118,37 @@ function send_tx_data(res, tx, blockcount, orphan) {
         tx.vin[0].amount != 0
       )
     )
+
   ) {
     // get a list of all the block reward addresses
     extracted_by_addresses = tx.vout.map(v => v.addresses);
 
     // add claim name data to the array
     db.get_extracted_by_claim_names(extracted_by_addresses, function (updated_extracted_by_addresses) {
-      finalize_send_tx_data(res, tx, blockcount, orphan, updated_extracted_by_addresses);
+      finalize_send_tx_data(res, tx, blockcount, orphan, updated_extracted_by_addresses, '');
     });
-  } else
-    finalize_send_tx_data(res, tx, blockcount, orphan, extracted_by_addresses);
+  } else {
+    let claimtx = '';
+    if (tx.op_return != null) {
+      const txa = tx.vout.filter(a => a.addresses.startsWith('N'));
+      claimtx = txa[0].addresses;
+      if (tx.op_return.length < 100) {
+        const ct = garbledToUtf8(tx.op_return);
+        tx.op_return = ct;
+      }
+    }
+    finalize_send_tx_data(res, tx, blockcount, orphan, extracted_by_addresses, claimtx);
+  }
+
 }
 
-function finalize_send_tx_data(res, tx, blockcount, orphan, extracted_by_addresses) {
+function finalize_send_tx_data(res, tx, blockcount, orphan, extracted_by_addresses, claimtx) {
   res.render(
     'tx',
     {
       active: 'tx',
       tx: tx,
+      claimtx: claimtx,
       orphan: orphan,
       confirmations: settings.shared_pages.confirmations,
       blockcount: blockcount,

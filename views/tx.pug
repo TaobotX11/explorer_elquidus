@@ -45,6 +45,10 @@ block content
         if settings.api_page.public_apis.rpc.getrawtransaction.enabled == true
           a.d-none.d-md-inline(href=`/api/getrawtransaction?txid=${tx.txid}&decrypt=1`, style='color: var(--bs-body-color);')
             span.fa-solid.fa-circle-info.float-end(data-bs-toggle='tooltip', data-bs-placement='top', title=settings.localization.view_raw_tx_data)
+      
+      if settings.claim_address_page.enabled == true && tx.op_return != null
+        a#claim-address.fw-bold(href='/claim/' + claimtx + '$' + tx.txid, style='font-size:normal;padding-bottom:0;text-align:center;')
+          =" Is this yours? Claim it now for free!"
       table#tx-table.table.table-bordered.table-striped.summary-table.mobile-border-right
         thead
           tr(class=theadClasses)

@@ -43,13 +43,19 @@ block content
         rowCallback: function(row, data, index) {
           var a_id = data[1];
           var claim_name = data[2];
+          var title = data[2];
           var linkref = '/address/' + a_id;
-          if(claim_name.indexOf('#')>-1){
-            linkref = '/block/' + claim_name.split('#')[1];
+          if (claim_name.indexOf('#') > -1){
+            if ((claim_name.split('#')[1]).length == 64){
+              title = claim_name.split('#')[0];
+              linkref = '/tx/' + claim_name.split('#')[1];
+            }else{
+              linkref = '/block/' + claim_name.split('#')[1];
+            }
           }
           $("td:eq(0)", row).html('<a href="' + linkref + '"><span class="fa-regular fa-eye" data-bs-toggle="tooltip" data-bs-placement="top" title="Media List"></span></a>').addClass('text-center d-table-cell d-md-none');
           $("td:eq(1)", row).html('<a href="/address/' + a_id + '">' + a_id + '</a>').addClass('breakWord d-none d-md-table-cell');
-          $("td:eq(2)", row).html('<a href="' + linkref + '">' + data[2] + '</a>').addClass('text-center');
+          $("td:eq(2)", row).html('<a href="' + linkref + '">' + title + '</a>').addClass('text-center');
         },
         fnDrawCallback: function(settings) {
           fixDataTableColumns();

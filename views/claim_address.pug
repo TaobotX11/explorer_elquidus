@@ -200,14 +200,14 @@ block content
             fieldset.entryField
               label.form-label(for='address') Wallet Address
               if hash == null || hash == ''
-                input#address.form-control(type='text', maxlength='70')
+                input#address.form-control(type='text', maxlength='34')
               else
-                  input#address.form-control(type='text', value=hash.split('$')[0], readonly='readonly', maxlength='70')
+                  input#address.form-control(type='text', value=hash.split('$')[0], readonly='readonly', maxlength='34')
           .form-group
             fieldset.entryField
               if hash.indexOf('$') > 1
-                label.form-label.mt-3(for='message') Block Height
-                input#message.form-control(type='text', value='image_name#'+hash.split('$')[1], maxlength='50')
+                label.form-label.mt-3(for='message') Block Height/Txid
+                input#message.form-control(type='text', value='image_name#'+hash.split('$')[1], maxlength='90')
               else  
                 label.form-label.mt-3(for='message') Display Name
                 input#message.form-control(type='text', placeholder='Display Name', maxlength='50')

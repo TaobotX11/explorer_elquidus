@@ -125,7 +125,7 @@ block content
           .card-header(style='position:relative;')
             strong Image Data
           if settings.claim_address_page.enabled == true && claimName === ''
-            a#claim-address.fw-bold(href='/claim/' + base64adr + '$' + block.height, style='font-size:smaller;padding-bottom:0;text-align:center;')
+            a#claim-address.fw-bold(href='/claim/' + base64adr + '$' + block.height, style='font-size:normal;padding-bottom:0;text-align:center;')
               =" Is this yours? Claim it now for free!"
           table.table.table-bordered.table-striped.table-hover.summary-table.mobile-border-right(style="display: block; overflow-x: auto;")
             thead
