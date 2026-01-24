@@ -76,7 +76,7 @@ block content
                     include ./includes/rl_labels.pug
             if settings.transaction_page.show_op_return == true
               if tx.op_return != null
-                td.breakWord #{tx.op_return.substr(0,100)}
+                td.table-info.breakWord #{tx.op_return.substr(0,100)}
               else
                 td.breakWord #{tx.op_return}
             if confirms >= confirmations
@@ -121,7 +121,7 @@ block content
                               if address.claim_name == null || address.claim_name == ''
                                 =address.addresses
                               else
-                                =address.claim_name
+                                =address.claim_name.split('#')[0]
                             include ./includes/rl_labels.pug
                           else if address.addresses == 'hidden_address'
                             if settings.address_page.enable_hidden_address_view == true
@@ -162,7 +162,7 @@ block content
                             if address.claim_name == null || address.claim_name == ''
                               =address.addresses
                             else
-                              =address.claim_name
+                              =address.claim_name.split('#')[0]
                           include ./includes/rl_labels.pug
                         td.table-success.text-center #{ramountParts[0]}.
                           span.decimal #{ramountParts[1]}

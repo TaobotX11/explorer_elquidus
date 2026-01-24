@@ -154,7 +154,7 @@ block content
           else
             strong #{address.a_id}
         else
-          strong #{claim_name}
+          strong #{claim_name.split('#')[0]}
         | &#8203;
         include ./includes/rl_labels.pug
         if (!settings.labels[address.a_id] || !settings.labels[address.a_id].enabled) && settings.claim_address_page.enabled == true
