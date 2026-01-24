@@ -130,6 +130,13 @@ html(lang='en')
           - showNethashChart = true
         if settings.orphans_page.show_difficulty_chart == true
           - showDifficultyChart = true
+      when 'mediagallery'
+        if settings.media_page.show_panels == true
+          - showPanels = true
+        if settings.media_page.show_nethash_chart == true
+          - showNethashChart = true
+        if settings.media_page.show_difficulty_chart == true
+          - showDifficultyChart = true
       when 'reward'
         if settings.blockchain_specific.heavycoin.reward_page.show_panels == true
           - showPanels = true
@@ -165,7 +172,7 @@ html(lang='en')
     else
       - showNethashChart = false
       - showDifficultyChart = false
-    if active == 'home' || active == 'address' || active == 'block' || active == 'markets' || active == 'masternodes' || active == 'movement' || active == 'network' || active == 'orphans' || active == 'reward' || active == 'richlist' || active == 'tx'
+    if active == 'home' || active == 'address' || active == 'block' || active == 'markets' || active == 'masternodes' || active == 'movement' || active == 'network' || active == 'orphans' || active == 'reward' || active == 'richlist' || active == 'tx' || active == 'mediagallery'
       include ./includes/common.pug
     if active == 'markets' || active == 'richlist' || active == 'reward' || showNethashChart == true || showDifficultyChart == true
       script(type='text/javascript', src='https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js')
@@ -484,7 +491,7 @@ html(lang='en')
             }
 
             showTopPanelData('difficultypanel', 'difficultyPanelLoading');
-            
+
             showTopPanelData('marketchartpanel', 'marketChartPanelLoading');
 
             if (hashrateString == null || hashrateString == '' || hashrateString == '-')
@@ -1539,6 +1546,11 @@ html(lang='en')
                     a.nav-link(href='/orphans')
                       span.fa-regular.fa-rectangle-xmark
                       span.margin-left-5 #{settings.localization.menu_orphans}
+                if settings.media_page.enabled == true
+                  li#mediagallery.nav-item
+                    a.nav-link(href='/mediagallery')
+                      span.fa-regular.fa-rectangle-xmark
+                      span.margin-left-5 #{settings.localization.menu_orphans}
                 each plugin in settings.plugins.allowed_plugins
                   if plugin != null && plugin.enabled == true && plugin.pages != null && plugin.pages.length > 0
                     each pg in plugin.pages
@@ -1664,7 +1676,7 @@ html(lang='en')
                   a.nav-link(href='/orphans')
                     span.nav-icon.fa-regular.fa-rectangle-xmark
                     span.margin-left-5 #{settings.localization.menu_orphans}
-              if settings.orphans_page.enabled == true
+              if settings.media_page.enabled == true
                 li#orphans.nav-item(alt='Media_List', title='Media List', data-bs-toggle='tooltip', data-bs-placement='right')
                   a.nav-link(href='/mediagallery')
                     span.nav-icon.fa-solid.fa-photo-film

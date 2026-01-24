@@ -1176,6 +1176,7 @@ app.set('markets_page', settings.markets_page);
 app.set('api_page', settings.api_page);
 app.set('claim_address_page', settings.claim_address_page);
 app.set('orphans_page', settings.orphans_page);
+app.set('media_page', settings.media_page);
 app.set('captcha', settings.captcha);
 app.set('labels', settings.labels);
 app.set('default_coingecko_ids', settings.default_coingecko_ids);

@@ -788,10 +788,10 @@ router.get('/orphans', function (req, res) {
 });
 
 router.get('/mediagallery', function (req, res) {
-  // ensure orphans page is enabled
-  if (settings.orphans_page.enabled == true) {
+  // ensure media page is enabled
+  if (settings.media_page.enabled == true) {
     // lookup the last updated date if necessary
-    get_last_updated_date(settings.orphans_page.page_header.show_last_updated, 'blockchain_last_updated', function (last_updated_date) {
+    get_last_updated_date(settings.media_page.page_header.show_last_updated, 'blockchain_last_updated', function (last_updated_date) {
       res.render(
         'mediagallery',
         {
