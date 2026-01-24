@@ -172,7 +172,7 @@ html(lang='en')
     else
       - showNethashChart = false
       - showDifficultyChart = false
-    if active == 'home' || active == 'address' || active == 'block' || active == 'markets' || active == 'masternodes' || active == 'movement' || active == 'network' || active == 'orphans' || active == 'reward' || active == 'richlist' || active == 'tx' || active == 'mediagallery'
+    if active == 'home' || active == 'address' || active == 'block' || active == 'markets' || active == 'masternodes' || active == 'movement' || active == 'network' || active == 'orphans' || active == 'mediagallery' || active == 'reward' || active == 'richlist' || active == 'tx'
       include ./includes/common.pug
     if active == 'markets' || active == 'richlist' || active == 'reward' || showNethashChart == true || showDifficultyChart == true
       script(type='text/javascript', src='https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js')
@@ -1549,8 +1549,8 @@ html(lang='en')
                 if settings.media_page.enabled == true
                   li#mediagallery.nav-item
                     a.nav-link(href='/mediagallery')
-                      span.fa-regular.fa-rectangle-xmark
-                      span.margin-left-5 #{settings.localization.menu_orphans}
+                      span.fa-solid.fa-photo-film
+                      span.margin-left-5 Media List
                 each plugin in settings.plugins.allowed_plugins
                   if plugin != null && plugin.enabled == true && plugin.pages != null && plugin.pages.length > 0
                     each pg in plugin.pages
@@ -1677,10 +1677,10 @@ html(lang='en')
                     span.nav-icon.fa-regular.fa-rectangle-xmark
                     span.margin-left-5 #{settings.localization.menu_orphans}
               if settings.media_page.enabled == true
-                li#orphans.nav-item(alt='Media_List', title='Media List', data-bs-toggle='tooltip', data-bs-placement='right')
+                li#mediagallery.nav-item(alt='Media_List', title='Media List', data-bs-toggle='tooltip', data-bs-placement='right')
                   a.nav-link(href='/mediagallery')
                     span.nav-icon.fa-solid.fa-photo-film
-                    span.margin-left-5 Media
+                    span.margin-left-5 Media List
               each plugin in settings.plugins.allowed_plugins
                 if plugin != null && plugin.enabled == true && plugin.pages != null && plugin.pages.length > 0
                   each pg in plugin.pages
