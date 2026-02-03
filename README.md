@@ -1,20 +1,20 @@
 # eIquidus
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/team-nusa/eiquidus?color=ffbd11&label=version)
-![GitHub Release Date](https://img.shields.io/github/release-date/team-nusa/eiquidus)
-![GitHub last commit](https://img.shields.io/github/last-commit/team-nusa/eiquidus)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/TaobotX11/eiquidus?color=ffbd11&label=version)
+![GitHub Release Date](https://img.shields.io/github/release-date/TaobotX11/eiquidus)
+![GitHub last commit](https://img.shields.io/github/last-commit/TaobotX11/eiquidus)
 <img src="public/img/screenshots/platform-windows macos linux-lightgrey.svg" />
-![GitHub](https://img.shields.io/github/license/team-nusa/eiquidus?color=ffbd11)
+![GitHub](https://img.shields.io/github/license/TaobotX11/eiquidus?color=ffbd11)
 
-Written in node.js and mongodb, eIquidus is the most stable, secure, customizable and feature-rich open-source block explorer with support for virtually any altcoin that implements some form of the [Bitcoin RPC API protocol](https://developer.bitcoin.org/reference/rpc/index.html) (EVM blockchains such as ETH, BNB, etc. are not supported). Originally built for the [nusa blockchain](https://github.com/team-nusa/nusa), eIquidus has since grown into a fully-featured explorer with a focus on stability and security at its core. All features from the [original iquidus explorer](https://github.com/iquidus/explorer) are included here along with many new ideas from other iquidus forks, and an absolute ton of new custom changes and bug fixes that were developed specifically for eIquidus.
+Written in node.js and mongodb, eIquidus is the most stable, secure, customizable and feature-rich open-source block explorer with support for virtually any altcoin that implements some form of the [Bitcoin RPC API protocol](https://developer.bitcoin.org/reference/rpc/index.html) (EVM blockchains such as ETH, BNB, etc. are not supported). Originally built for the [nusa blockchain](https://github.com/TaobotX11/nusa), eIquidus has since grown into a fully-featured explorer with a focus on stability and security at its core. All features from the [original iquidus explorer](https://github.com/iquidus/explorer) are included here along with many new ideas from other iquidus forks, and an absolute ton of new custom changes and bug fixes that were developed specifically for eIquidus.
 
 ![Homepage](public/img/screenshots/homepage-1-103-0.png)
 
 ### Crowdfunding Program
 
-nusa accepts targeted donations in an effort to crowdfund various feature and improvement requests for the block explorer and other nusa-related projects. [Browse the list of unfunded tasks](https://nusa.io/tasklist/hide-completed/hide-funded/show-unfunded/) and send nusa coins to the correct funding address to help meet the funding goal for tasks that you would like to see developed. Once the funding goal is met, nusa developers will begin work on the task asap and will remain a top priority until completed. If you are a software developer and would like to work on funded tasks in exchange for payment in nusa, please get in touch with us using one of the [Developer Contact](#developer-contact) links below.
+nusa accepts targeted donations in an effort to crowdfund various feature and improvement requests for the block explorer and other nusa-related projects. [Browse the list of unfunded tasks](https://nusacoin.org/tasklist/hide-completed/hide-funded/show-unfunded/) and send nusa coins to the correct funding address to help meet the funding goal for tasks that you would like to see developed. Once the funding goal is met, nusa developers will begin work on the task asap and will remain a top priority until completed. If you are a software developer and would like to work on funded tasks in exchange for payment in nusa, please get in touch with us using one of the [Developer Contact](#developer-contact) links below.
 
-**NEW:** Preliminary plugin support has been added. Help support the first plugin proposal for automatic snapshot creation. More info: [https://nusa.io/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/](https://nusa.io/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/)
+**NEW:** Preliminary plugin support has been added. Help support the first plugin proposal for automatic snapshot creation. More info: [https://nusacoin.org/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/](https://nusacoin.org/task/181/b371d98f6217f2f533b3a0c9fedce7b200571c4f/)
 
 ### Premium Support
 
@@ -25,8 +25,8 @@ All code in this project is open source and available free-of-charge under the B
 Feel free to contact the developer using one of the options below:
 
 <div align="center">
-<a href="https://discord.gg/dSuGm3y"><img src="https://img.shields.io/badge/Discord-Joe%20%5BTeam%20nusa%5D-blue?style=for-the-badge&logo=Discord" /></a>&nbsp;
-<a href="https://t.me/joeuhren"><img src="https://img.shields.io/badge/Telegram-joeuhren-blue?style=for-the-badge&logo=Telegram" /></a>
+<a href="https://discord.gg/NcKKZFBzJ"><img src="https://img.shields.io/badge/Discord-Nusa%20%5BTeam%20nusa%5D-blue?style=for-the-badge&logo=Discord" /></a>&nbsp;
+<a href="https://explorer.nusacoin.org/"><img src="https://img.shields.io/badge/Telegram-Nusacoin-blue?style=for-the-badge&logo=Telegram" /></a>
 </div>
 
 Table of Contents
@@ -975,20 +975,20 @@ This warning is currently displayed when starting or stopping the explorer using
 
 ### Donations / Support Us
 
-The eIquidus block explorer is brought to you by the tireless efforts of the [nusa development team](https://nusa.io/#section-team) for the benefit of the greater crypto community. If you enjoy our work, please consider supporting our continued development of this and many other cool crypto projects which you can find on our [github page](https://github.com/team-nusa).
+The eIquidus block explorer is brought to you by the tireless efforts of the [nusa development team](https://nusacoin.org/#section-team) for the benefit of the greater crypto community. If you enjoy our work, please consider supporting our continued development of this and many other cool crypto projects which you can find on our [github page](https://github.com/TaobotX11).
 
 You can support us via one of the following options:
 
 1. Buy and hodl nusa. Buying and trading our nusa coin helps stimulate the market price which allows us to hire more developers and continue to release high quality products in the future. We are listed on the following exchanges:
     - [FreiXLite](https://freixlite.com/market/nusa/LTC)
     - [Dexomy](https://dexomy.com/exchange/dashboard?coin_pair=nusa_USDT)
-2. Participate in our [crowdfunding program](https://nusa.io/tasklist/hide-completed/hide-funded/show-unfunded/) by either sending some cryptocurrency to help fund the tasks you are most eager to see brought to life or [submit a new custom task request](https://nusa.io/add-new-task/) detailing a feature or improvement you would like to see developed for any nusa-related project.
+2. Participate in our [crowdfunding program](https://nusacoin.org/tasklist/hide-completed/hide-funded/show-unfunded/) by either sending some cryptocurrency to help fund the tasks you are most eager to see brought to life or [submit a new custom task request](https://nusacoin.org/add-new-task/) detailing a feature or improvement you would like to see developed for any nusa-related project.
 3. Consider a small donation by sending us some cryptocurrency:
     - **BTC:** [15zQAQFB9KR35nPWEJEKvmytUF6fg2zvdP](https://www.blockchain.com/btc/address/15zQAQFB9KR35nPWEJEKvmytUF6fg2zvdP)
     - **ETH:** [0x1E4163EE9721bCA934D9e40C792360A901a59E02](https://etherscan.io/address/0x1E4163EE9721bCA934D9e40C792360A901a59E02) **NOTE:** Can be used for USDT or any other token on the ETH network
     - **BNB:** [0x1E4163EE9721bCA934D9e40C792360A901a59E02](https://bscscan.com/address/0x1E4163EE9721bCA934D9e40C792360A901a59E02) **NOTE:** Can be used for USDT or any other token on the BNB network
-    - **nusa:** [EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd](https://explorer.nusa.io/address/EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd)
-4. Are you a software developer? Consider taking advantage of our [crowdfunding program](https://nusa.io/tasklist/hide-completed/) and get paid in nusa to help make the block explorer and other nusa-related projects even better by submitting code improvements for open bounty tasks.
+    - **nusa:** [EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd](https://explorer.nusacoin.org/address/EYYW8Nvz5aJz33M3JNHXG2FEHWUsntozrd)
+4. Are you a software developer? Consider taking advantage of our [crowdfunding program](https://nusacoin.org/tasklist/hide-completed/) and get paid in nusa to help make the block explorer and other nusa-related projects even better by submitting code improvements for open bounty tasks.
 
 ### Special Thanks
 
