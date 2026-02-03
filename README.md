@@ -327,7 +327,7 @@ exit
 #### Download Source Code
 
 ```
-git clone https://github.com/team-nusa/eiquidus explorer
+git clone https://github.com/TaobotX11/explorer_elquidus.git
 ```
 
 #### Install Node Modules
