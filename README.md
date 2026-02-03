@@ -238,7 +238,8 @@ Table of Contents
 
 ### See it in Action
 
--  https://explorer.nusa.io/
+-  https://explorer.nusacoin.org/
+-  https://book.taobot.org/
 
 ### Installation
 
