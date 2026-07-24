@@ -558,7 +558,8 @@ app.use('/ext/getrichlist', function (req, res) {
   // check if the getrichlist api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getrichlist.enabled == true) {
     db.get_richlist(settings.coin.name, function (richlist) {
-      res.send(richlist);
+      var a_ext = { richlist: richlist.balance };
+      res.send(a_ext);
     });
   } else
     res.end(settings.localization.method_disabled);
