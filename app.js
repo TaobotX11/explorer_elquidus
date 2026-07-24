@@ -554,6 +554,16 @@ app.use('/ext/getbalance/:hash', function (req, res) {
     res.end(settings.localization.method_disabled);
 });
 
+app.use('/ext/getrichlist', function (req, res) {
+  // check if the getrichlist api is enabled
+  if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getrichlist.enabled == true) {
+    db.get_richlist(settings.coin.name, function (richlist) {
+      res.send(richlist);
+    });
+  } else
+    res.end(settings.localization.method_disabled);
+});
+
 app.use('/ext/getdistribution', function (req, res) {
   // check if the getdistribution api is enabled
   if (settings.api_page.enabled == true && settings.api_page.public_apis.ext.getdistribution.enabled == true) {
