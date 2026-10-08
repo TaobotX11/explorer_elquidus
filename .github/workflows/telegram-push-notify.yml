@@ -1,0 +1,49 @@
+name: Notify Telegram on push
+
+# Fires on every push to main (one notification per push, listing its commits).
+on:
+  push:
+    branches: [main]
+
+jobs:
+  telegram-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_TOPIC_ID }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+          COMPARE_URL: ${{ github.event.compare }}
+          COMMITS_JSON: ${{ toJSON(github.event.commits) }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "::warning::Telegram secrets are not configured; skipping notification."
+            exit 0
+          fi
+          # One line per commit (max 10 shown): "<msg> (<author>, <sha>)".
+          COMMIT_LINES=$(printf '%s' "$COMMITS_JSON" | jq -r \
+            '(. // [])[:10] | map("• " + (.message | split("\n")[0] | .[0:120]) + " (" + .author.name + ", " + .id[0:7] + ")") | join("\n")')
+          COUNT=$(printf '%s' "$COMMITS_JSON" | jq '(. // []) | length')
+          if [ "$COUNT" -gt 10 ]; then
+            COMMIT_LINES="${COMMIT_LINES}
+          … dan $((COUNT - 10)) commit lainnya"
+          fi
+          TEXT=$(printf '📝 Push ke %s oleh %s\n%s\n\n%s\n\n🔗 %s' \
+            "$BRANCH" "$ACTOR" "$REPO" "$COMMIT_LINES" "$COMPARE_URL")
+          ARGS=(--data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+                --data-urlencode "text=${TEXT}" \
+                --data-urlencode "disable_web_page_preview=true")
+          if [ -n "$TELEGRAM_TOPIC_ID" ]; then
+            ARGS+=(--data-urlencode "message_thread_id=${TELEGRAM_TOPIC_ID}")
+          fi
+          RESPONSE=$(curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" "${ARGS[@]}")
+          if printf '%s' "$RESPONSE" | grep -q '"ok":true'; then
+            echo "Telegram notification sent."
+          else
+            echo "::error::Failed to send Telegram notification: $RESPONSE"
+            exit 1
+          fi
